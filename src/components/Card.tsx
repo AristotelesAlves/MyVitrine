@@ -1,46 +1,41 @@
-import { gql, useQuery } from "@apollo/client";
-import { Gadgets } from './Gadgets';
+import { Logo } from './Logo';
 
-const GET_PRODUTOS_QUERY = gql `
-    query MyQuery {
-        mercadorias {
-          id
-          link
-          name
-          parcela
-          preco
-          img {
-            url
-          }
-        }
-      } 
-`
-interface GetProdutosQueryResponse {
-    mercadorias: {
-        id: string
-        link: string
-        name: string
-        parcela: string
-        preco: string
-        loja: 'shopee' | 'aliexpress' | 'amazon'
-        img:{
-          url : string
-        }
-      }[]
-    }
+interface propsGadgets{
+    titulo: string;
+    img: string;
+    preco: string;
+    site: string;
+    logo: string;
+}
 
+export function Card(props: propsGadgets){
 
-function Card(){
-    const { data } = useQuery<GetProdutosQueryResponse>(GET_PRODUTOS_QUERY)
-    console.log(data)
+    const logo = props.logo == "shopee" ? <Logo logo='shopee' loja='Shopee'/> : props.logo == "aliexpress" ? <Logo logo='aliexpress' loja='aliexpress' /> : props.logo == "amazon" ? <Logo logo='amazon' loja='Amazon'/> : "erro!"
+    
+
     return(
-        <section className="w-full flex flex-wrap p-10 gap-5 justify-center">
-            {data?.mercadorias.map((card) => {
-                return (
-                    <Gadgets key={card.id} titulo={card.name} img={card.img.url} parcela={card.parcela} preco={card.preco} site={card.link} logo={card.loja}/>
-                )
-            })}
-        </section>
+        <div className="w-[250px] h-[340px] flex flex-col justify-between bg-slate-400 rounded-md overflow-hidden shadow-slate-900 shadow-md">
+            <div className="p-3">
+                <figure className="flex justify-center">
+                    <img className="h-[200px] w-[180px]" src={props.img} alt={props.logo}/>
+                    {logo}
+                </figure>
+            </div>
+            <div className="text-white bg-customBlue-200 p-3">
+                <h2 className="">
+                    {props.titulo}
+                </h2>
+            
+                <div className="flex justify-between mt-3">
+                    <p className="font-medium text-gray-200">
+                        R${props.preco}
+                    </p>
+                    <a className="px-3 py-1 bg-customBlue-100 rounded-xl"
+                        href={props.site}>
+                        Comprar
+                    </a>
+                </div>
+            </div>
+        </div>
     )
 }
-export default Card;
